@@ -1,0 +1,121 @@
+.sidebar {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  background: #3c1c94;
+  border-radius: 0.5rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  transition: left 0.3s ease-in-out;
+  position: absolute;
+  width: 15rem;
+  left: -20rem;
+
+  @media screen and (min-width: 768px) {
+    position: relative;
+    overflow: visible;
+    left: 0;
+    min-width: 15rem;
+    height: 100dvh;
+    @include flex_center();
+    align-items: flex-start;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &.active {
+    @media screen and (max-width: 768px) {
+      left: 0;
+      height: 100%;
+      z-index: 100;
+    }
+  }
+
+  &_inner {
+    display: grid;
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+
+  &_logo {
+    @include flex_center();
+    padding: 1rem 0;
+    position: relative;
+
+    & > div {
+      position: absolute;
+      outline: 1px solid $white;
+      color: $white;
+      font-size: 2rem;
+      top: 0.5rem;
+      right: 0;
+      border-radius: 0.6rem;
+      @include hover_animate();
+      z-index: 1000;
+
+      @media screen and (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+
+  &_bottom {
+    overflow-y: scroll;
+    height: 70dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &_menu_list {
+    display: grid;
+    gap: 0.5rem;
+    li {
+      padding: 0.6rem;
+      border-radius: 0.8rem;
+      @include flex_center();
+      justify-content: flex-start;
+      gap: 0.3rem;
+      text-align: center;
+      text-transform: capitalize;
+      font-size: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.5rem;
+      letter-spacing: 0.02rem;
+      cursor: pointer;
+      transition: all 0.4s ease-in-out;
+      scale: 0.9;
+      width: 13.5rem;
+      color: $white;
+
+      &:hover,
+      &.active {
+        scale: 1;
+        background: $btn_bg;
+        color: $white;
+      }
+
+      &.logout {
+        bottom: 1rem;
+        color: $logout;
+        width: 13rem;
+        height: fit-content;
+        border: 1px solid red;
+
+        &:hover {
+          background: transparent;
+          outline: 1px solid $logout;
+        }
+      }
+    }
+  }
+}

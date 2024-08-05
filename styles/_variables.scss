@@ -1,0 +1,470 @@
+/* MIXINS */
+@mixin flex_center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex_wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@mixin hover_animate {
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+@mixin box_default($width: 17rem, $height: 20rem, $bigW: 20rem, $bigH: 20rem) {
+  width: $width;
+  height: $height;
+  box-shadow: $shadow;
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  @media screen and (min-width: 576px) {
+    width: $bigW;
+    height: $bigH;
+    margin-top: 1rem 0;
+  }
+}
+
+@mixin btn_main {
+  text-transform: capitalize;
+  background: $btn_bg;
+  color: $white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  scale: 1;
+  transition: all 0.4s ease-in-out;
+  border: none;
+  outline: none;
+
+  &:hover {
+    scale: 1.1;
+    font-weight: 700;
+  }
+}
+
+/* CONTAINER */
+.main_container {
+  padding: 0.5rem;
+
+  @media screen and (min-width: 576px) {
+    padding: 1.5rem;
+  }
+
+  @media screen and (min-width: 1200px) {
+    padding: 1rem 4rem;
+  }
+  @media screen and (min-width: 1400px) {
+    padding: 1rem 6rem;
+  }
+}
+
+.sub_container {
+  @media screen and (min-width: 576px) {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 80%;
+  }
+}
+
+/* TEXT VARIABLES */
+.main_header {
+  font-size: 1.7rem;
+  color: $header;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
+
+  @media screen and (min-width: 576px) {
+    font-size: 2.2rem;
+  }
+
+  &_small {
+    font-size: 1.2rem;
+
+    @media screen and (min-width: 576px) {
+      font-size: 1.8rem;
+    }
+  }
+}
+
+.text_medium {
+  font-size: 1.7rem;
+  font-weight: 800;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0.2rem 0;
+
+  @media screen and (min-width: 576px) {
+    font-size: 2.7rem;
+  }
+}
+
+.text_small {
+  color: $dark_text;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.link_text {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: blue;
+    font-weight: 500;
+    scale: 1.2;
+  }
+}
+
+.box_header {
+  font-size: 1.2rem;
+  color: $header;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
+
+  &.big {
+    font-size: 1.4rem;
+  }
+}
+
+/* LINE */
+.line_small {
+  display: block;
+  border: 2px solid $black;
+  width: 4rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+
+  &.max {
+    width: 100%;
+    max-width: 4rem;
+    margin-inline: auto;
+
+    &.smaller {
+      margin: 0 auto;
+      max-width: 8rem;
+      border-width: 1px;
+    }
+  }
+}
+
+/* HOVER ANIMATION */
+.hover_animation {
+  @include hover_animate();
+
+  &.smaller {
+    @media screen and (max-width: 768px) {
+      transform: scale(0.9);
+
+      &:hover {
+        transform: scale(1);
+      }
+    }
+  }
+}
+
+/* BORDER */
+.border_test {
+  outline: 2px solid red;
+}
+
+/* DEFAULT BOX */
+.default_box {
+  @include box_default();
+}
+
+/* ANIMATED CODES */
+.box {
+  position: relative;
+  width: 300px;
+  min-height: 350px;
+  background-color: $dark_white;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.box::after,
+.box::before {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+}
+
+.box::after {
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    #f57361
+  );
+  animation: animateAfter 4s linear infinite;
+  animation-delay: -2s;
+}
+
+.box:hover .box::after {
+  animation-play-state: running;
+}
+
+.box::before {
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    #53b3cb
+  );
+  animation: animateBefore 4s linear infinite;
+}
+
+.box:hover .box::before {
+  animation-play-state: running;
+}
+
+@keyframes animateAfter {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animateBefore {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.box > span {
+  position: absolute;
+  inset: 5px;
+  border-radius: 16px;
+  background: $dark_white;
+  z-index: 1;
+}
+
+.plans_box_inner {
+  position: relative;
+  z-index: 2;
+  color: $dark_text;
+  font-size: 1em;
+  width: 90%;
+  height: 90%;
+}
+
+/* BUTTON VARIABLES */
+.btn_main {
+  @include btn_main();
+}
+
+.cmn-btn {
+  padding: 12px 35px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  background-color: #23413c;
+  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.15);
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  color: #fff;
+  opacity: 0.8;
+}
+
+.cmn-btn:hover {
+  color: #fff;
+  opacity: 1;
+  background-color: #0f3e58;
+  outline: 1px solid $white;
+}
+
+.cmn-btn.active {
+  background-color: #fff;
+}
+
+/* BACKGROUND VARIABLES */
+
+.btn_bg {
+  background: $btn_bg;
+}
+
+.gold_bg {
+  background: $gold_bg;
+}
+
+.shadow_main {
+  box-shadow: $shadow;
+}
+
+.light_bg {
+  background: $dark_white;
+}
+
+.white_bg {
+  background: $white;
+}
+
+.banks_bg {
+  background: $banksSec;
+}
+
+/* ----------------WHITE_BOX VARIABLE---------------- */
+.white_box {
+  background: $white;
+  width: 100%;
+  max-width: 22rem;
+  border-radius: 0.5rem;
+  padding: 1.2rem;
+  text-align: center;
+
+  @media screen and (min-width: 768px) {
+    padding: 2rem;
+  }
+
+  &_inner {
+    .header {
+      h2 {
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        word-spacing: 5px;
+        cursor: pointer;
+        @media screen and (min-width: 768px) {
+          font-size: 2rem;
+        }
+      }
+
+      h4 {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        word-spacing: 5px;
+
+        @media screen and (min-width: 768px) {
+          font-size: 1.7rem;
+        }
+      }
+    }
+
+    .form_sec {
+      padding: 0 0.8rem 2rem 0.8rem;
+
+      @media screen and (min-width: 768px) {
+        padding: 0 2rem 2rem 2rem;
+      }
+
+      & > p {
+        text-align: left;
+      }
+
+      p {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        @media screen and (min-width: 768px) {
+          font-size: 1.1rem;
+        }
+      }
+
+      .inputs_sec {
+        display: grid;
+        gap: 1.2rem;
+        margin-top: 1.5rem;
+        input {
+          width: 100%;
+          height: 2rem;
+          padding: 0.5rem;
+          outline: none;
+          border: 0.5px solid $border;
+        }
+      }
+    }
+    .checkbox {
+      @include flex_center();
+      gap: 1rem;
+
+      input[type="checkbox"] {
+        width: 1.4rem;
+        height: 1rem;
+      }
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 0.9rem;
+        font-weight: 400;
+      }
+    }
+
+    button {
+      background-image: linear-gradient(to right, $gr5 0%, $gr6 100%);
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      margin: 1rem 0;
+      width: 100%;
+      height: 2rem;
+      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgb(0 0 0 / 15%);
+      scale: 1;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      color: $white;
+
+      &:hover {
+        font-weight: 800;
+        scale: 1.1;
+      }
+    }
+
+    .bottom_sec {
+      p {
+        font-size: 0.8rem;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+// HIDE SCROLL-BAR
+.hide_scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// PASSWORD TOGGLE BUTTON
+
+.password-toggle-btn {
+  position: absolute;
+  top: 0.9rem;
+  z-index: 100;
+  color: #27312f;
+  font-size: 1.3rem;
+  right: 0.8rem;
+  background: transparent;
+}
