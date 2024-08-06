@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { BiLoaderCircle, BiShow, BiHide } from "react-icons/bi";
 import Modal from "./(components)/Modal";
 import Head from "next/head";
-import { blockwhite } from "@/assets";
+import { whitelogo } from "@/assets";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -96,7 +96,7 @@ const Register = () => {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-        <title>BlockInv || Register</title>
+        <title>TradeMarlltd || Register</title>
       </Head>
 
       <div className="auth_page relative">
@@ -107,7 +107,7 @@ const Register = () => {
                 <Image
                   onClick={() => router.push("https://www.blockinv.com/")}
                   className="cursor-pointer"
-                  src={blockwhite}
+                  src={whitelogo}
                   alt="logo"
                   width={140}
                   height={140}
@@ -269,7 +269,7 @@ const Register = () => {
               </div>
             </div>
             <p className="text-center text-[#c5c5c5c5] text-[1rem] my-4">
-              Copyright © 2024 BlockInv. All Rights Reserved.
+              Copyright © 2024 TradeMarkltd. All Rights Reserved.
             </p>
           </div>
 
