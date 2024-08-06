@@ -6,7 +6,7 @@ import { BiHide, BiLoaderCircle, BiShow } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { LuMail } from "react-icons/lu";
 import Image from "next/image";
-import { blockwhite, logo2 } from "../../assets";
+import { whitelogo } from "../../assets";
 import Head from "next/head";
 
 const Login = () => {
@@ -75,7 +75,7 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>BlockInv || Login</title>
+        <title>TradeMarkltd || Login</title>
       </Head>
 
       <div className="auth_page relative">
@@ -86,7 +86,7 @@ const Login = () => {
                 <Image
                   onClick={() => router.push("https://www.blockinv.com/")}
                   className="cursor-pointer"
-                  src={blockwhite}
+                  src={whitelogo}
                   alt="logo"
                   width={140}
                   height={140}
@@ -180,7 +180,7 @@ const Login = () => {
               </div>
             </div>
             <p className="text-center text-[#c5c5c5c5] text-[1rem] my-4">
-              Copyright © 2024 BlockInv. All Rights Reserved.
+              Copyright © 2024 TradeMarkltd. All Rights Reserved.
             </p>
           </div>
 

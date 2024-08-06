@@ -39,3 +39,4 @@ export { default as blockwhite } from "./Blockwhite.png";
 export { default as btcQrCode } from "./Btc Qr.jpg";
 export { default as EthQrCode } from "./Eth Qr.jpg";
 export { default as SolQrCode } from "./Sol Qr.jpg";
+export { default as whitelogo } from "./White .png";
