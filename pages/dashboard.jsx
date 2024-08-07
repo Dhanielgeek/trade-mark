@@ -29,7 +29,6 @@ const Dashboard = () => {
   const [btcBalance, setBtcBalance] = useState(0);
   const [ethBalance, setEthBalance] = useState(0);
   const [solBalance, setSolBalance] = useState(0);
-  const [exchangeRates, setExchangeRates] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -55,35 +54,7 @@ const Dashboard = () => {
         const fetchedData = await response.json();
 
         if (response.ok) {
-          const {
-            balance,
-            username,
-            earnings,
-            totalDeposits,
-            totalWithdrawals,
-            solBalance,
-          } = fetchedData.data;
-
-          // Fetch exchange rates
-          const exchangeRatesResponse = await fetch(
-            "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
-          );
-          const exchangeRates = await exchangeRatesResponse.json();
-
-          const btcPrice = exchangeRates.bitcoin.usd;
-          const ethPrice = exchangeRates.ethereum.usd;
-          const solPrice = exchangeRates.solana.usd;
-
-          // Convert balance to BTC, ETH, and SOL
-          const convertedBtcBalance = (balance / btcPrice).toFixed(6);
-          const convertedEthBalance = (balance / ethPrice).toFixed(6);
-          const convertedSolBalance = (balance / solPrice).toFixed(6);
-
           setData(fetchedData);
-          setBtcBalance(convertedBtcBalance);
-          setEthBalance(convertedEthBalance);
-          setSolBalance(convertedSolBalance || 0);
-          setExchangeRates(exchangeRates);
         } else {
           console.error("response", response);
         }
@@ -96,11 +67,11 @@ const Dashboard = () => {
   }, [router]);
 
   useEffect(() => {
-    const fetchTotalApprovedInvestments = async () => {
+    const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/investment/all`,
+          `${process.env.NEXT_PUBLIC_API_URL}/transaction/all`,
           {
             method: "GET",
             headers: {
@@ -112,27 +83,40 @@ const Dashboard = () => {
 
         if (response.ok) {
           const data = await response.json();
-          const activeInvestments = data.data.filter(
-            (investment) => investment.status.toLowerCase() === "approved"
+          const approvedDeposits = data.data.filter(
+            (transaction) =>
+              transaction.status.toLowerCase() === "approved" &&
+              transaction.type.toLowerCase() === "deposit"
           );
-          const totalAmount = activeInvestments.reduce(
-            (accumulator, investment) =>
-              accumulator + parseFloat(investment.amount),
+
+          const btcDeposits = approvedDeposits
+            .filter((t) => t.method === "BTC")
+            .reduce((sum, t) => sum + t.amount, 0);
+          const ethDeposits = approvedDeposits
+            .filter((t) => t.method === "ETH")
+            .reduce((sum, t) => sum + t.amount, 0);
+          const solDeposits = approvedDeposits
+            .filter((t) => t.method === "SOL")
+            .reduce((sum, t) => sum + t.amount, 0);
+
+          setBtcBalance(btcDeposits);
+          setEthBalance(ethDeposits);
+          setSolBalance(solDeposits);
+
+          const totalAmount = approvedDeposits.reduce(
+            (accumulator, deposit) => accumulator + parseFloat(deposit.amount),
             0
           );
           setTotalApprovedInvestments(totalAmount);
         } else {
-          console.error(
-            "Failed to fetch total approved investments:",
-            response.status
-          );
+          console.error("Failed to fetch transactions:", response.status);
         }
       } catch (error) {
-        console.error("Error fetching total approved investments:", error);
+        console.error("Error fetching transactions:", error);
       }
     };
 
-    fetchTotalApprovedInvestments();
+    fetchTransactions();
   }, []);
 
   const shufflePercentageChange = () => {
@@ -146,24 +130,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     const intervalId = setInterval(shufflePercentageChange, 1000);
-
     return () => clearInterval(intervalId);
   }, [numbers]);
-
-  const handleDeposit = async (amount, currency) => {
-    // Convert the deposited amount to the respective cryptocurrency
-    let newBalance = 0;
-    if (currency === "BTC") {
-      newBalance = parseFloat(btcBalance) + amount / exchangeRates.bitcoin.usd;
-      setBtcBalance(newBalance.toFixed(6));
-    } else if (currency === "ETH") {
-      newBalance = parseFloat(ethBalance) + amount / exchangeRates.ethereum.usd;
-      setEthBalance(newBalance.toFixed(6));
-    } else if (currency === "SOL") {
-      newBalance = parseFloat(solBalance) + amount / exchangeRates.solana.usd;
-      setSolBalance(newBalance.toFixed(6));
-    }
-  };
 
   if (!data) {
     return (
@@ -178,8 +146,14 @@ const Dashboard = () => {
     );
   }
 
-  const { balance, username, earnings, totalDeposits, totalWithdrawals } =
-    data.data;
+  const {
+    balance,
+    username,
+    earnings,
+    totalDeposits,
+    totalWithdrawals,
+    activeInvestments,
+  } = data.data;
   const name = username || "Guest";
 
   const summaryItems = [
@@ -189,7 +163,7 @@ const Dashboard = () => {
       amount: `${new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(totalApprovedInvestments || "0.00")}`,
+      }).format(activeInvestments || "0.00")}`,
       text_dark: "active investments",
       arrow: <LuArrowsUpFromLine />,
       color: "green",
@@ -205,7 +179,6 @@ const Dashboard = () => {
       arrow: <FaArrowTrendDown />,
       color: "red",
     },
-
     {
       id: 3,
       icon_src: <TbChartAreaFilled />,
@@ -226,7 +199,7 @@ const Dashboard = () => {
           <div className="w-full h-[12rem] text-blue-500">
             <div className="w-full h-[50%] border-b flex justify-center py-3 items-start flex-col">
               <p className="font-medium">Total Portfolio</p>
-              <p className="font-semibold text-2xl">${balance}.00</p>
+              <p className="font-semibold text-2xl">${earnings}.00</p>
             </div>
             <div className="w-full h-[50%] flex justify-around items-center">
               <div className="w-[15%] h-[85%] flex justify-center gap-1 items-center flex-col">
@@ -261,7 +234,7 @@ const Dashboard = () => {
           <div className="w-full h-[30rem] flex justify-center items-center">
             <Chartone />
           </div>
-          <div className="dashboard_page_bottom hide_scrollbar h-[28rem]">
+          <div className="dashboard_page_bottom hide_scrollbar">
             {data ? (
               <div className="dashboard_page_bottom_inner">
                 {summaryItems.map((summaryItem, index) => (
@@ -271,10 +244,8 @@ const Dashboard = () => {
                         <span>{summaryItem.icon_src}</span>
                         <p>{summaryItem.text_dark}</p>
                       </div>
-
                       <div className="dashboard_page_box_bottom">
                         <h5 className="text-blue-500">{summaryItem.amount}</h5>
-
                         <span
                           style={{ color: summaryItem.color }}
                           className="flex justify-center items-end gap-2"
@@ -299,8 +270,7 @@ const Dashboard = () => {
               </h2>
             )}
           </div>
-
-          {/* <Element name="my-assets" className="my-assets h-[28rem] ">
+          <Element name="my-assets" className="my-assets h-[28rem] ">
             <h2 className="text-xl font-semibold text-blue-500">My Assets</h2>
             <div className="flex flex-col gap-4 mt-4 max-h-64">
               <div className="bg-[#fdfdfd] p-4 rounded-lg shadow-lg flex items-center gap-4">
@@ -308,7 +278,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total BTC Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    {btcBalance} BTC
+                    ${btcBalance.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -317,7 +287,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total ETH Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    {ethBalance} ETH
+                    ${ethBalance.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -326,12 +296,12 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total SOL Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    {solBalance} SOL
+                    ${solBalance.toFixed(2)}
                   </p>
                 </div>
               </div>
             </div>
-          </Element> */}
+          </Element>
         </div>
       </div>
     </DashboardLayout>
