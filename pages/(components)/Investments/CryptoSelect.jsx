@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaBitcoin, FaEthereum } from "react-icons/fa";
 import { TbCurrencySolana } from "react-icons/tb";
 
@@ -9,7 +9,82 @@ const cryptoData = {
 };
 
 const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
-  const totalBalanceUSD = 1000; // Example total balance in USD
+  const [cryptoBalances, setCryptoBalances] = useState({
+    BTC: 0,
+    ETH: 0,
+    SOL: 0,
+  });
+  const [exchangeRates, setExchangeRates] = useState({
+    BTC: 0,
+    ETH: 0,
+    SOL: 0,
+  });
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/transaction/all`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          const initialBalances = { BTC: 0, ETH: 0, SOL: 0 };
+
+          data.data.forEach((transaction) => {
+            if (transaction.status.toLowerCase() === "approved") {
+              initialBalances[transaction.method] += transaction.amount;
+            }
+          });
+
+          setCryptoBalances(initialBalances);
+        } else {
+          console.error("Failed to fetch transactions:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    const fetchExchangeRates = async () => {
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setExchangeRates({
+            BTC: data.bitcoin.usd,
+            ETH: data.ethereum.usd,
+            SOL: data.solana.usd,
+          });
+        } else {
+          console.error("Failed to fetch exchange rates:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+      }
+    };
+
+    fetchTransactions();
+    fetchExchangeRates();
+  }, []);
+
+  const formatUSD = (amount) => {
+    return amount.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
 
   return (
     <div className="crypto-selector text-center py-10">
@@ -26,18 +101,16 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
               } transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white`}
             >
               <div className="flex items-center gap-2">
+                <span className="font-semibold">{crypto} </span>
                 <span className={cryptoData[crypto].color}>
                   {cryptoData[crypto].icon}
                 </span>
-                <span className="font-semibold">{crypto}</span>
               </div>
               <div className="text-left">
                 <p className="text-sm">
-                  Balance: {cryptoData[crypto].balance} {crypto}
+                  {cryptoBalances[crypto] * exchangeRates[crypto]} {crypto}
                 </p>
-                <p className="text-sm">
-                  (${(cryptoData[crypto].balance * totalBalanceUSD).toFixed(2)})
-                </p>
+                <p className="text-sm">{formatUSD(cryptoBalances[crypto])}</p>
               </div>
               <div>
                 <button
@@ -51,11 +124,6 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
           </div>
         ))}
       </div>
-      {/* <div className="mt-6">
-        <h3 className="text-xl font-semibold">
-          Total Balance: ${totalBalanceUSD}
-        </h3>
-      </div> */}
     </div>
   );
 };
