@@ -1,3 +1,3 @@
-export const btcAddress = "bc1qhsgw3wywhghtsgghw8kwsdyxysm49fwmnea3jm";
-export const EthAddress = "0x42cb4cE74e8DDC82E961536Ff44e26164F6bbc56";
-export const SolAddress = "Ews27kYwAoBooMfXFhDz7GmDEKQcNWVLpTw4FrKJ5DKQ";
+export const btcAddress = "bc1q9grrclck65mp0sss522y7svh6qv6fgsjpuhdu9";
+export const EthAddress = "0xa38E6676a095E61c3645f3AdAb10ED183B15AbFc";
+export const SolAddress = "51Lht4TWkUouCWZStwkmasiP7dr2BEsxucdNfjURmmcM";
