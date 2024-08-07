@@ -13,7 +13,7 @@ const AdminLayout = ({ children }) => {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-        <title>BlockInv</title>
+        <title>TradeMarkltd</title>
       </Head>
       <div className="dashboard_layout max-h-[100dvh] overflow-hidden">
         <div className="dashboard_layout_inner flex justify-start items-start gap-[1rem]">

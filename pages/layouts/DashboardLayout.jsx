@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }) => {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-        <title>BlockInv || Dashboard</title>
+        <title>Trademark-ltd || Dashboard</title>
       </Head>
       <div className="dashboard_layout max-h-[100dvh] overflow-hidden">
         <div className="dashboard_layout_inner flex justify-start items-start gap-[1rem]">

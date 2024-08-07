@@ -9,7 +9,7 @@ export default function Document() {
           dangerouslySetInnerHTML={{
             __html: `
               var _smartsupp = _smartsupp || {};
-              _smartsupp.key = '5b01725cc9f7f93d66b5b3db72703a608cd6997f';
+              _smartsupp.key = 'b5dd4d696c77e75b0d2e8f1b0d6e17063c1541ed';
               window.smartsupp||(function(d) {
                 var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
                 s=d.getElementsByTagName('script')[0];c=d.createElement('script');
