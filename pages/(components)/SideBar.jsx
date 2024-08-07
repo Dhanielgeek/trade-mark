@@ -8,7 +8,7 @@ import { TbArrowsDown, TbArrowsUp, TbHistory } from "react-icons/tb";
 import { MdPendingActions } from "react-icons/md";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { AiOutlineLogout } from "react-icons/ai";
-import { blockwhite, favicon, whitelogo } from "../../assets/index";
+import { whitelogo } from "../../assets/index";
 import { FaChartLine, FaMoneyBillTransfer } from "react-icons/fa6";
 import { LuBarChart3 } from "react-icons/lu";
 import { RiEdit2Fill } from "react-icons/ri";
