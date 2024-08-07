@@ -8,7 +8,7 @@ import { TbArrowsDown, TbArrowsUp, TbHistory } from "react-icons/tb";
 import { MdPendingActions } from "react-icons/md";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { AiOutlineLogout } from "react-icons/ai";
-import { blockwhite, favicon } from "../../assets/index";
+import { blockwhite, favicon, whitelogo } from "../../assets/index";
 import { FaChartLine, FaMoneyBillTransfer } from "react-icons/fa6";
 import { LuBarChart3 } from "react-icons/lu";
 import { RiEdit2Fill } from "react-icons/ri";
@@ -49,7 +49,7 @@ const SideNav = ({ active, setActive }) => {
     <aside className={`sidebar ${active ? "active" : ""} `}>
       <div className="sidebar_inner">
         <div className="sidebar_logo">
-          <Image width={90} height={90} src={blockwhite} alt="logo" />
+          <Image width={90} height={90} src={whitelogo} alt="logo" />
 
           <div onClick={() => setActive(false)}>
             <IoIosClose />

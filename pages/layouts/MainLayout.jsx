@@ -8,7 +8,7 @@ const MainLayout = ({ children }) => {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-        <title>BlockInv</title>
+        <title>TrademarkLtd</title>
       </Head>
       <div className="main_layout">
         <div className="main_layout_inner">

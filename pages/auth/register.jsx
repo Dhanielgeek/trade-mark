@@ -96,7 +96,7 @@ const Register = () => {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-        <title>TradeMarlltd || Register</title>
+        <title>TradeMarkltd || Register</title>
       </Head>
 
       <div className="auth_page relative">
@@ -105,7 +105,7 @@ const Register = () => {
             <div className="auth_page_left_inner p-4 lg:p-8">
               <div className="auth_page_left_top">
                 <Image
-                  onClick={() => router.push("https://www.blockinv.com/")}
+                  onClick={() => router.push("https://www.trade-markltd.com/")}
                   className="cursor-pointer"
                   src={whitelogo}
                   alt="logo"
