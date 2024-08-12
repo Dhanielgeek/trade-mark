@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { BiLoaderCircle } from "react-icons/bi";
-import CryptoSelector from "./CryptoSelect";
+import CryptoSelector from "./CryptoSelect"; // Ensure correct import
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
   const router = useRouter();
@@ -16,6 +18,7 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
     if (typeof window !== "undefined") {
       if (!token) {
         router.push("/auth/login");
+        return;
       }
     }
 
@@ -33,14 +36,15 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
         );
 
         const fetchedData = await response.json();
+        console.log(fetchedData.data);
 
         if (response.ok) {
           setPlans(fetchedData);
         } else {
-          console.error("response", response);
+          console.error("Failed to fetch plans:", response);
         }
       } catch (error) {
-        console.error("Error Fetching User:", error);
+        console.error("Error fetching plans:", error);
       }
     };
 
@@ -52,14 +56,55 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
     setShowInvestmentInput(true);
   };
 
+  const handleInvestment = async () => {
+    const token = localStorage.getItem("token");
+    const selectedPlanData = plans?.data?.find(
+      (plan) => plan.id === selectedPlan
+    );
+    const selectedCrypto = localStorage.getItem("selectedCrypto");
+    const data = {
+      plan_id: selectedPlan,
+      amount: investmentAmount,
+      investment_price: selectedPlanData?.price || 0,
+      returns: selectedPlanData?.returns || null,
+      currency: selectedCrypto,
+    };
+    console.log(data);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/investment`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok) {
+        toast.success("Pending Investment will be Approved Shortly!");
+        setMode("details");
+        setPlanId(result.data.id); // Assuming the API returns the new investment ID
+        setShowInvestmentInput(false);
+        setInvestmentAmount("");
+      } else {
+        toast.error(result.message || "Investment failed.");
+      }
+    } catch (error) {
+      console.error("Error making investment:", error);
+      toast.error("Investment failed. Please try again.");
+    }
+  };
+
   const handleInvestmentSubmit = () => {
-    if (investmentAmount) {
-      setPlanId(selectedPlan);
-      setMode("details");
-      setShowInvestmentInput(false);
-      setInvestmentAmount(""); // Clear input after submission
+    if (investmentAmount && investmentAmount > 0) {
+      handleInvestment();
     } else {
-      alert("Please enter an amount to invest.");
+      toast.error("Please enter a valid amount to invest.");
     }
   };
 
@@ -87,6 +132,7 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
 
   return (
     <>
+      <ToastContainer />
       <div className="w-full h-32"></div>
       <div className={`${mode === "plans" ? "block p-4" : "hidden"}`}>
         <div className="flex justify-between items-center mb-4">
@@ -99,8 +145,8 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
           </button>
         </div>
         <div className="overflow-scroll max-h-[75dvh] hide_scrollbar flex justify-start items-center gap-4 flex-wrap">
-          {plans && plans?.data?.length > 0 ? (
-            plans?.data?.map((plan, index) => (
+          {plans?.data?.length > 0 ? (
+            plans.data.map((plan, index) => (
               <div
                 key={index}
                 className="plans bg-white p-4 rounded shadow-md w-full max-w-sm"
@@ -120,23 +166,19 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
                   {`${new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "USD",
-                  }).format(plan.price || "0.00")}`}
+                  }).format(plan.price || 0)}`}
                 </p>
                 <p>
                   <span className="font-bold">Maximum: </span>
                   {`${new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "USD",
-                  }).format(plan.earning || "0.00")}`}
+                  }).format(plan.earning || 0)}`}
                 </p>
-                {/* <p>
-                  <span className="font-bold">Time Intervals: </span>
-                  {plan.time_interval} hrs
-                </p> */}
                 <p>
                   <span className="font-bold">ROI: </span>
                   {`${new Intl.NumberFormat("en-US", {}).format(
-                    plan.returns
+                    plan.returns || 0
                   )}%`}
                 </p>
                 <div className="max-w-fit mt-4">
@@ -166,6 +208,7 @@ const InvestmentPlans = ({ setMode, mode, setPlanId }) => {
               onChange={(e) => setInvestmentAmount(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded mb-4"
               placeholder="Enter amount"
+              min="0"
             />
             <button
               onClick={handleInvestmentSubmit}

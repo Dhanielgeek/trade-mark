@@ -7,14 +7,8 @@ const cryptoData = {
   ETH: { icon: <FaEthereum />, color: "text-purple-500", balance: 0 },
   SOL: { icon: <TbCurrencySolana />, color: "text-blue-500", balance: 0 },
 };
-
 const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
   const [cryptoBalances, setCryptoBalances] = useState({
-    BTC: 0,
-    ETH: 0,
-    SOL: 0,
-  });
-  const [exchangeRates, setExchangeRates] = useState({
     BTC: 0,
     ETH: 0,
     SOL: 0,
@@ -54,36 +48,12 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
       }
     };
 
-    const fetchExchangeRates = async () => {
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setExchangeRates({
-            BTC: data.bitcoin.usd,
-            ETH: data.ethereum.usd,
-            SOL: data.solana.usd,
-          });
-        } else {
-          console.error("Failed to fetch exchange rates:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching exchange rates:", error);
-      }
-    };
-
     fetchTransactions();
-    fetchExchangeRates();
   }, []);
 
-  const formatUSD = (amount) => {
-    return amount.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
+  const handleCryptoSelection = (crypto) => {
+    setSelectedCrypto(crypto);
+    localStorage.setItem("selectedCrypto", crypto); // Save to localStorage
   };
 
   return (
@@ -93,7 +63,7 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
         {Object.keys(cryptoData).map((crypto) => (
           <div key={crypto} className="relative w-[90%]">
             <button
-              onClick={() => setSelectedCrypto(crypto)}
+              onClick={() => handleCryptoSelection(crypto)} // Use new handler
               className={`crypto-btn w-full py-2 border rounded flex items-center justify-between px-10 gap-2 ${
                 selectedCrypto === crypto
                   ? "bg-blue-500 text-white"
@@ -107,14 +77,13 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
                 </span>
               </div>
               <div className="text-left">
-                <p className="text-sm">
-                  {cryptoBalances[crypto] * exchangeRates[crypto]} {crypto}
+                <p className="text-sm font-semibold">
+                  Balance {crypto} (${cryptoBalances[crypto]})
                 </p>
-                <p className="text-sm">{formatUSD(cryptoBalances[crypto])}</p>
               </div>
               <div>
                 <button
-                  onClick={() => setSelectedCrypto(crypto)}
+                  onClick={() => handleCryptoSelection(crypto)} // Use new handler
                   className="px-3 py-1 bg-blue-500 font-semibold text-white rounded hover:bg-blue-600"
                 >
                   Invest
