@@ -26,9 +26,11 @@ const Dashboard = () => {
   const [numbers, setNumbers] = useState([
     24.22, 15.33, 46.44, 7.55, 9.3, 10.9, 34.4, 55.9, 28.7,
   ]);
-  const [btcBalance, setBtcBalance] = useState(0);
-  const [ethBalance, setEthBalance] = useState(0);
-  const [solBalance, setSolBalance] = useState(0);
+  const [balances, setBalances] = useState({
+    BTC: 0,
+    ETH: 0,
+    SOL: 0,
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,7 +67,6 @@ const Dashboard = () => {
 
     fetchDetails();
   }, [router]);
-
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -89,19 +90,14 @@ const Dashboard = () => {
               transaction.type.toLowerCase() === "deposit"
           );
 
-          const btcDeposits = approvedDeposits
-            .filter((t) => t.method === "BTC")
-            .reduce((sum, t) => sum + t.amount, 0);
-          const ethDeposits = approvedDeposits
-            .filter((t) => t.method === "ETH")
-            .reduce((sum, t) => sum + t.amount, 0);
-          const solDeposits = approvedDeposits
-            .filter((t) => t.method === "SOL")
-            .reduce((sum, t) => sum + t.amount, 0);
+          const newBalances = { BTC: 0, ETH: 0, SOL: 0 };
 
-          setBtcBalance(btcDeposits);
-          setEthBalance(ethDeposits);
-          setSolBalance(solDeposits);
+          approvedDeposits.forEach((transaction) => {
+            const method = transaction.method.toUpperCase();
+            newBalances[method] += transaction.amount;
+          });
+
+          setBalances(newBalances);
 
           const totalAmount = approvedDeposits.reduce(
             (accumulator, deposit) => accumulator + parseFloat(deposit.amount),
@@ -278,7 +274,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total BTC Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${btcBalance.toFixed(2)}
+                    ${balances.BTC.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -287,7 +283,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total ETH Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${ethBalance.toFixed(2)}
+                    ${balances.ETH.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -296,7 +292,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total SOL Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${solBalance.toFixed(2)}
+                    ${balances.SOL.toFixed(2)}
                   </p>
                 </div>
               </div>
