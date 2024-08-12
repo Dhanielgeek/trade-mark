@@ -47,7 +47,7 @@ const MakePaymentSOL = ({ setMode, mode }) => {
           },
           body: JSON.stringify({
             amount: depositAmount,
-            method: selectedPayment,
+            currency: selectedPayment,
             to: emailData,
             from: from,
           }),

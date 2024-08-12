@@ -4,7 +4,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { LuLoader2 } from "react-icons/lu";
 import Image from "next/image";
-import { blockwhite } from "@/assets";
+import { whitelogo } from "@/assets";
 import Head from "next/head";
 
 const ForgotPassword = () => {
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
           <form onSubmit={submitEmailHandler} autoComplete="off">
             <div className="auth_header">
               <Image
-                src={blockwhite}
+                src={whitelogo}
                 alt="logo"
                 onClick={() => router.push("https://www.goldenweaths.com/")}
                 width={280}
