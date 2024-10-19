@@ -98,12 +98,14 @@ const Dashboard = () => {
           });
 
           setBalances(newBalances);
+          console.log(newBalances);
 
           const totalAmount = approvedDeposits.reduce(
             (accumulator, deposit) => accumulator + parseFloat(deposit.amount),
             0
           );
           setTotalApprovedInvestments(totalAmount);
+          console.log(totalAmount);
         } else {
           console.error("Failed to fetch transactions:", response.status);
         }
