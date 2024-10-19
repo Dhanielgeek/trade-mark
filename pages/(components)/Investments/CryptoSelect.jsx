@@ -7,6 +7,7 @@ const cryptoData = {
   ETH: { icon: <FaEthereum />, color: "text-purple-500", balance: 0 },
   SOL: { icon: <TbCurrencySolana />, color: "text-blue-500", balance: 0 },
 };
+
 const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
   const [cryptoBalances, setCryptoBalances] = useState({
     BTC: 0,
@@ -35,6 +36,7 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
 
           data.data.forEach((transaction) => {
             if (transaction.status.toLowerCase() === "approved") {
+              // Adjust the balance based on the method and transaction amount
               initialBalances[transaction.method] += transaction.amount;
             }
           });
