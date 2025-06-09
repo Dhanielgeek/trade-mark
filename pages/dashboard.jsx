@@ -151,7 +151,11 @@ const Dashboard = () => {
     totalDeposits,
     totalWithdrawals,
     activeInvestments,
+    btcBal,
+    ethBal,
+    solBal,
   } = data.data;
+
   const name = username || "Guest";
 
   const summaryItems = [
@@ -276,7 +280,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total BTC Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${balances.BTC.toFixed(2)}
+                    ${btcBal?.toFixed(2) || "0.00"}
                   </p>
                 </div>
               </div>
@@ -285,7 +289,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total ETH Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${balances.ETH.toFixed(2)}
+                    ${ethBal?.toFixed(2) || "0.00"}
                   </p>
                 </div>
               </div>
@@ -294,7 +298,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm text-gray-400">Total SOL Balance</p>
                   <p className="text-lg font-semibold text-blue-500">
-                    ${balances.SOL.toFixed(2)}
+                    ${ethBal?.toFixed(2) || "0.00"}
                   </p>
                 </div>
               </div>
