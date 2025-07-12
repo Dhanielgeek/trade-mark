@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" type="image/png" href="/assets/favicon.png" />
-        {/* <script
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               var _smartsupp = _smartsupp || {};
@@ -18,7 +18,7 @@ export default function Document() {
               })(document);
             `,
           }}
-        /> */}
+        />
       </Head>
       <body>
         <Main />
