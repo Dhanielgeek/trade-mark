@@ -183,6 +183,11 @@ export const adminMenuItems = [
     link: "/admin/create-plan",
   },
   {
+    icon: <FaPlus />,
+    title: "Add Balance",
+    link: "/admin/add-balance",
+  },
+  {
     icon: <BsGraphUpArrow />,
     title: "investments",
     link: "/admin/investments",
