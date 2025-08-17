@@ -2,6 +2,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import { useEffect, useState } from "react";
 import { BiLoaderCircle } from "react-icons/bi";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const UsersComps = () => {
   const [users, setUsers] = useState(null);
@@ -99,6 +100,52 @@ const UsersComps = () => {
     }
   };
 
+  const handleDeleteUser = async (uid) => {
+    const token = localStorage.getItem("token");
+    const Loading = toast.loading("Deleting user...");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${uid}/deleteUser`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        // remove user from state
+        setUsers((prevUsers) => prevUsers.filter((user) => user.uid !== uid));
+
+        toast.update(Loading, {
+          render: "User deleted successfully",
+          type: "success",
+          isLoading: false,
+        });
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete user:", errorData);
+
+        toast.update(Loading, {
+          render: errorData.message || "Failed to delete user",
+          type: "error",
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+
+      toast.update(Loading, {
+        render: "Error deleting user",
+        type: "error",
+        isLoading: false,
+      });
+    }
+  };
+
   const openModal = (user) => {
     setSelectedUser(user);
     setModalVisible(true);
@@ -149,6 +196,7 @@ const UsersComps = () => {
                       </>
                     )}
                     <th>Password</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -174,6 +222,14 @@ const UsersComps = () => {
                           </>
                         )}
                         <td>{user.password}</td>
+                        <td>
+                          <button
+                            onClick={() => handleDeleteUser(user.uid)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
