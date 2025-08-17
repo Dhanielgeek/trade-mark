@@ -117,9 +117,6 @@ const UsersComps = () => {
       );
 
       if (response.ok) {
-        // remove user from state
-        setUsers((prevUsers) => prevUsers.filter((user) => user.uid !== uid));
-
         toast.update(Loading, {
           render: "User deleted successfully",
           type: "success",
