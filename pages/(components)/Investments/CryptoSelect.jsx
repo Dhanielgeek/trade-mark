@@ -16,11 +16,11 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
   });
 
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/transaction/all`,
+          `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
           {
             method: "GET",
             headers: {
@@ -29,28 +29,26 @@ const CryptoSelector = ({ selectedCrypto, setSelectedCrypto }) => {
             },
           }
         );
-        const data = await response.json();
+
+        const result = await response.json();
 
         if (response.ok) {
-          const initialBalances = { BTC: 0, ETH: 0, SOL: 0 };
+          const user = result.data;
 
-          data.data.forEach((transaction) => {
-            if (transaction.status.toLowerCase() === "approved") {
-              // Adjust the balance based on the method and transaction amount
-              initialBalances[transaction.method] += transaction.amount;
-            }
+          setCryptoBalances({
+            BTC: user.btcBal || 0,
+            ETH: user.ethBal || 0,
+            SOL: user.solBal || 0,
           });
-
-          setCryptoBalances(initialBalances);
         } else {
-          console.error("Failed to fetch transactions:", response.status);
+          console.error("Failed to load profile:", response.status);
         }
       } catch (error) {
-        console.error("Error fetching transactions:", error);
+        console.error("Error fetching profile:", error);
       }
     };
 
-    fetchTransactions();
+    fetchProfile();
   }, []);
 
   const handleCryptoSelection = (crypto) => {
